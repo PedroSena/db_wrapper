@@ -1,0 +1,5 @@
+.rvmrc
+.ruby-version
+Gemfile.lock
+.bundle/
+.rspec
