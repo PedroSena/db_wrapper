@@ -1,8 +1,3 @@
-$:.unshift(File.dirname(__FILE__) + '/../lib')
+$:.unshift(File.dirname(__FILE__) + '/../lib/db_wrapper')
 
-require 'em-proxy'
-require 'sidekiq'
-
-%w(listeners protocols).each do |dir|
-  Dir["#{dir}/*.rb"].each { |file| require file }
-end
+Gem.find_files('db_wrapper/**/*.rb').each { |file| require file }

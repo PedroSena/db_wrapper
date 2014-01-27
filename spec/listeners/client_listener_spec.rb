@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'db_wrapper/listeners/client_listener'
 
 describe DBWrapper::Listeners::ClientListener do
   let(:client_listener) { DBWrapper::Listeners::ClientListener }

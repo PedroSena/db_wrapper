@@ -1,5 +1,3 @@
-require 'db_wrapper/util/underscore'
-
 #Base listener for all data sent from the client to the database
 module DBWrapper
   module Listeners

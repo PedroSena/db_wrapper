@@ -1,4 +1,4 @@
-require 'db_wrapper/listeners/client_listener'
+require 'listeners/client_listener'
 
 module DBWrapper
   module Listeners

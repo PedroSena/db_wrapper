@@ -1,5 +1,3 @@
-require 'db_wrapper/protocols/sql_parser'
-
 module DBWrapper
   class MysqlProtocol
     def parse_command(dirty_command)

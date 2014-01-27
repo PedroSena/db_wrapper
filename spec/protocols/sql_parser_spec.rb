@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'db_wrapper/listeners/sql_command'
-require 'db_wrapper/protocols/sql_parser'
 
 describe DBWrapper::SqlParser do
   it 'detects the command based on the beginning of a string' do

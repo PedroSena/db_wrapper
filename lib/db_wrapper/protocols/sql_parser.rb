@@ -1,5 +1,3 @@
-require 'db_wrapper/listeners/sql_command'
-
 module DBWrapper
   module SqlParser
     def detect_interested_observers(parsed_string)

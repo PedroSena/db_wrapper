@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'db_wrapper/listeners_controller'
-require 'db_wrapper/listeners/sql_command'
 
 describe DBWrapper::ListenersController do
   let(:controller) { DBWrapper::ListenersController.new }
@@ -28,7 +26,7 @@ describe DBWrapper::ListenersController do
       protocol = Object.new
       allow(protocol).to receive(:parse_command).and_return(command)
       allow(protocol).to receive(:detect_interested_observers).and_return([:select])
-      listener = DBWrapper::Listeners::Select.new { raise command }
+      listener = DBWrapper::Listeners::Select.new { raise self.command }
       controller.add_listener listener
       expect { controller.call_listeners protocol, command }.to raise_error(command)
     end

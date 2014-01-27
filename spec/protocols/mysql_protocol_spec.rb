@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'db_wrapper/protocols/mysql_protocol'
 
 describe DBWrapper::MysqlProtocol do
   let(:protocol) { DBWrapper::MysqlProtocol.new }
