@@ -1,34 +1,28 @@
 require 'spec_helper'
 
 describe DBWrapper::ListenersController do
-  let(:controller) { DBWrapper::ListenersController.new }
-  let(:listener) { DBWrapper::Listeners::Select.new do; end }
-
-  describe 'add_listener' do
-    before(:each) do
-      controller.add_listener listener
-    end
-    let(:listeners) { controller.instance_variable_get(:@listeners) }
-    it 'adds a listener inside an array for that given type' do
-      expect(listeners.size).to eq 1
-      expect(listeners[listener.type].class).to eq Array
-    end
-    it 'groups listeners of the same type' do
-      controller.add_listener listener
-      expect(listeners.size).to eq 1
-      expect(listeners[listener.type].size).to eq 2
-    end
-  end
 
   describe 'call_listeners' do
+    let(:listener) { DBWrapper::Listeners::Select.new { raise self.command } }
+
     it 'calls #perform on the listener' do
+      hash = Hash.new
+      hash[listener.type] = [listener]
+      controller = DBWrapper::ListenersController.new hash
       command = 'select 1 from a'
       protocol = Object.new
       allow(protocol).to receive(:parse_command).and_return(command)
       allow(protocol).to receive(:detect_interested_observers).and_return([:select])
-      listener = DBWrapper::Listeners::Select.new { raise self.command }
-      controller.add_listener listener
       expect { controller.call_listeners protocol, command }.to raise_error(command)
+    end
+
+    it 'will ignore if no listener is bound to specific command' do
+      controller = DBWrapper::ListenersController.new({})
+      command = 'select 1 from a'
+      protocol = Object.new
+      allow(protocol).to receive(:parse_command).and_return(command)
+      allow(protocol).to receive(:detect_interested_observers).and_return([:select])
+      controller.call_listeners protocol, command
     end
   end
 

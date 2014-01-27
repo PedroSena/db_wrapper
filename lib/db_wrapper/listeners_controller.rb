@@ -1,20 +1,14 @@
 module DBWrapper
   class ListenersController
-    def initialize
-      @listeners = {}
-    end
 
-    def add_listener(listener)
-      unless @listeners.has_key?(listener.type)
-        @listeners[listener.type] = []
-      end
-      @listeners[listener.type] << listener
+    def initialize(listeners)
+      @listeners = listeners
     end
 
     def call_listeners(protocol, raw_command)
       parsed_command = protocol.parse_command raw_command
       interested_observers_types = protocol.detect_interested_observers parsed_command
-      interested_observers_types.each { |type| run_listeners type, parsed_command }
+      interested_observers_types.each { |type| run_listeners type, parsed_command } unless interested_observers_types.nil?
     end
 
     private

@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
   spec.add_dependency 'em-proxy'
   spec.add_dependency 'sidekiq'
+  spec.add_dependency 'log4r'
 
   spec.files = `git ls-files`.split "\n"
   spec.test_files = `git ls-files -- spec/*`.split "\n"
