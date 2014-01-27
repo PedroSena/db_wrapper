@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
-$:.unshift(File.dirname(__FILE__) + '/../lib')
+require 'db_wrapper'
 
 RSpec.configure do |config|
 
