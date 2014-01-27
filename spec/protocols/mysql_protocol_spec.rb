@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'db_wrapper/protocols/mysql_protocol'
 
 describe DBWrapper::MysqlProtocol do
-  let(:protocol) { DBWrapper::MysqlProtocol }
+  let(:protocol) { DBWrapper::MysqlProtocol.new }
 
   describe 'parse_command - removing non-sql data' do
     def test_parse(clean_string, dirty_string)

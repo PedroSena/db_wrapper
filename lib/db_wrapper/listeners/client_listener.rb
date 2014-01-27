@@ -4,8 +4,23 @@ require 'db_wrapper/util/underscore'
 module DBWrapper
   module Listeners
     class ClientListener
+      attr_accessor :command
+
+      def initialize(&block)
+        @block = block
+      end
+
+      def perform(parsed_command)
+        self.command = parsed_command
+        instance_eval(&@block)
+      end
+
       def self.type
         self.name.split('::').last.underscore.to_sym
+      end
+
+      def type
+        self.class.type
       end
 
       def self.types_on_hierarchy
