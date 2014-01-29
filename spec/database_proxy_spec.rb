@@ -12,7 +12,7 @@ describe DBWrapper::DatabaseProxy do
     end
   end
 
-  it 'calls the listeners while running' do
+  it 'calls the client listeners while running' do
     called = false
     EM.run do
       EventMachine.add_timer(0.1) do
@@ -25,7 +25,7 @@ describe DBWrapper::DatabaseProxy do
       end
 
       proxy.protocol = DBWrapper::MysqlProtocol.new
-      proxy.add_listener(DBWrapper::Listeners::Select.new do
+      proxy.add_client_listener(DBWrapper::Listeners::Select.new do
         called = true
       end)
       proxy.start!
@@ -33,15 +33,15 @@ describe DBWrapper::DatabaseProxy do
     expect(called).to be true
   end
 
-  describe 'add_listener' do
+  describe 'add_client_listener' do
     let(:listener) { DBWrapper::Listeners::Select.new do; end }
     before(:each) do
-      proxy.add_listener listener
+      proxy.add_client_listener listener
     end
-    let(:listeners) { proxy.instance_variable_get(:@listeners) }
+    let(:client_listeners) { proxy.instance_variable_get(:@client_listeners) }
 
     it 'adds a listener' do
-      expect(listeners.size).to eq 1
+      expect(client_listeners.size).to eq 1
     end
   end
 

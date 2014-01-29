@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DBWrapper::CrudDetector do
+describe DBWrapper::SimpleCommandDetector do
 
   before(:all) do
     @select_command = 'select 1 from a'

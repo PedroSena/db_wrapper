@@ -9,22 +9,22 @@ module DBWrapper
       @port = port
       @database_host = database_host
       @database_port = database_port
-      @listeners = []
+      @client_listeners = []
     end
 
-    def add_listener(listener)
-      @listeners << listener
+    def add_client_listener(client_listener)
+      @client_listeners << client_listener
     end
 
     def start!
       raise 'No protocol was given' if self.protocol.nil?
-      listeners_controller = ListenersController.new @listeners
+      client_listeners_controller = ListenersController.new @client_listeners
       database_proxy = self
       Proxy.start(host: @host, port: @port) do |conn|
         conn.server :database, host: database_proxy.database_host, port: database_proxy.database_port, relay_server: true
 
         conn.on_data do |data|
-          EM.defer proc { listeners_controller.call_listeners(database_proxy.protocol, data) }
+          EM.defer proc { client_listeners_controller.call_listeners(database_proxy.protocol, data) }
           data
         end
 
