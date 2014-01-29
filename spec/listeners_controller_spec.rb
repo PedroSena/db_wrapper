@@ -6,14 +6,22 @@ describe DBWrapper::ListenersController do
     let(:listener) { DBWrapper::Listeners::Select.new { raise self.command } }
 
     it 'calls #perform on the listener' do
-      hash = Hash.new
-      hash[listener.type] = [listener]
-      controller = DBWrapper::ListenersController.new hash
-      command = 'select 1 from a'
-      protocol = Object.new
-      allow(protocol).to receive(:parse_command).and_return(command)
-      allow(protocol).to receive(:detect_interested_observers).and_return([:select])
-      expect { controller.call_listeners protocol, command }.to raise_error(command)
+      module EventMachine
+        def self.defer(op = nil, callback = nil, &blk)
+          op.call
+        end
+      end
+      EM.run do
+        hash = Hash.new
+        hash[listener.type] = [listener]
+        controller = DBWrapper::ListenersController.new hash
+        command = 'select 1 from a'
+        protocol = Object.new
+        allow(protocol).to receive(:parse_command).and_return(command)
+        allow(protocol).to receive(:detect_interested_observers).and_return([:select])
+        expect { controller.call_listeners protocol, command }.to raise_error(command)
+        EM.stop
+      end
     end
 
     it 'will ignore if no listener is bound to specific command' do
