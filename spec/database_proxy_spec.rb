@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'em-http-request'
 
 describe DBWrapper::DatabaseProxy do
 
@@ -11,17 +12,25 @@ describe DBWrapper::DatabaseProxy do
     end
   end
 
-  it 'run!' do
-    DBWrapper::DatabaseProxy.new '127.0.0.1','3307', '127.0.0.1', '3306' do |proxy|
-      proxy.add_listener(DBWrapper::Listeners::Select.new do
-        puts 'Select listener got the following command: ' + command
-      end)
-      proxy.add_listener(DBWrapper::Listeners::Insert.new do
-        puts 'Insert listener got the following command: ' + command
-      end)
+  it 'calls the listeners while running' do
+    called = false
+    EM.run do
+      EventMachine.add_timer(0.1) do
+        sock = TCPSocket.new '127.0.0.1', 3307
+        sock.send "\x10\x00\x00\x00\x03" + 'Select 1 from something', 0
+        sock.close
+      end
+      EventMachine.add_timer(0.2) do
+        EM.stop
+      end
+
       proxy.protocol = DBWrapper::MysqlProtocol.new
-      proxy.run!
+      proxy.add_listener(DBWrapper::Listeners::Select.new do
+        called = true
+      end)
+      proxy.start!
     end
+    expect(called).to be true
   end
 
   describe 'add_listener' do

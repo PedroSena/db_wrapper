@@ -18,15 +18,15 @@ module DBWrapper
       @listeners[listener.type] << listener
     end
 
-    def run!
-      raise 'No protocol was given' if @protocol.nil?
+    def start!
+      raise 'No protocol was given' if self.protocol.nil?
       listeners_controller = ListenersController.new @listeners
       database_proxy = self
       Proxy.start(host: @host, port: @port) do |conn|
         conn.server :database, host: database_proxy.database_host, port: database_proxy.database_port, relay_server: true
 
         conn.on_data do |data|
-          listeners_controller.call_listeners(database_proxy.protocol, data)
+          EM.defer proc { listeners_controller.call_listeners(database_proxy.protocol, data) }
           data
         end
 
@@ -34,6 +34,10 @@ module DBWrapper
           unbind if server == :database
         end
       end
+    end
+
+    def stop!
+      Proxy.stop
     end
 
   end

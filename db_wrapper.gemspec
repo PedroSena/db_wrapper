@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
   spec.license = 'MIT'
 
   spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'em-http-request'
   spec.add_dependency 'em-proxy'
-  spec.add_dependency 'sidekiq'
   spec.add_dependency 'log4r'
 
   spec.files = `git ls-files`.split "\n"

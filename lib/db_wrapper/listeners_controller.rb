@@ -15,7 +15,7 @@ module DBWrapper
     def run_listeners(type, parsed_command)
       listeners = @listeners[type]
       return if listeners.nil? || listeners.empty?
-      listeners.each { |listener| listener.perform(parsed_command) }
+      listeners.each { |listener| EM.defer proc { listener.perform(parsed_command) } }
     end
   end
 end
