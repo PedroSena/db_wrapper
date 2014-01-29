@@ -23,7 +23,7 @@ describe DBWrapper::ListenersController do
     end
 
     it 'will ignore if no listener is bound to specific command' do
-      controller = DBWrapper::ListenersController.new({})
+      controller = DBWrapper::ListenersController.new([])
       command = 'select 1 from a'
       protocol = Object.new
       allow(protocol).to receive(:parse_command).and_return(command)

@@ -1,5 +1,5 @@
 module DBWrapper
-  module CrudDetector
+  module SimpleCommandDetector
     def listening?(command)
       self.class.name.split('::').last.downcase == command.split(' ').first.downcase
     end
