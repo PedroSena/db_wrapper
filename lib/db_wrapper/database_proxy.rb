@@ -9,13 +9,11 @@ module DBWrapper
       @port = port
       @database_host = database_host
       @database_port = database_port
-      @listeners = {}
-      yield self if block_given?
+      @listeners = []
     end
 
     def add_listener(listener)
-      @listeners[listener.type] = [] unless @listeners.has_key?(listener.type)
-      @listeners[listener.type] << listener
+      @listeners << listener
     end
 
     def start!

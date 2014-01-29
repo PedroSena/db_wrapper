@@ -6,16 +6,13 @@ module DBWrapper
     end
 
     def call_listeners(protocol, raw_command)
+      return if @listeners.nil?
       parsed_command = protocol.parse_command raw_command
-      interested_observers_types = protocol.detect_interested_observers parsed_command
-      interested_observers_types.each { |type| run_listeners type, parsed_command } unless interested_observers_types.nil?
+      @listeners.select { |listener| listener.listening?(parsed_command) }.each do |listener|
+        listener.command = parsed_command
+        EM.defer proc { listener.perform }
+      end
     end
 
-    private
-    def run_listeners(type, parsed_command)
-      listeners = @listeners[type]
-      return if listeners.nil? || listeners.empty?
-      listeners.each { |listener| EM.defer proc { listener.perform(parsed_command) } }
-    end
   end
 end

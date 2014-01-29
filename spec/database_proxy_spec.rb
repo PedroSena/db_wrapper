@@ -40,14 +40,8 @@ describe DBWrapper::DatabaseProxy do
     end
     let(:listeners) { proxy.instance_variable_get(:@listeners) }
 
-    it 'adds a listener inside an array for that given type' do
+    it 'adds a listener' do
       expect(listeners.size).to eq 1
-      expect(listeners[listener.type].class).to eq Array
-    end
-    it 'groups listeners of the same type' do
-      proxy.add_listener listener
-      expect(listeners.size).to eq 1
-      expect(listeners[listener.type].size).to eq 2
     end
   end
 

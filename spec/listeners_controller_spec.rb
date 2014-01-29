@@ -12,9 +12,7 @@ describe DBWrapper::ListenersController do
         end
       end
       EM.run do
-        hash = Hash.new
-        hash[listener.type] = [listener]
-        controller = DBWrapper::ListenersController.new hash
+        controller = DBWrapper::ListenersController.new [listener]
         command = 'select 1 from a'
         protocol = Object.new
         allow(protocol).to receive(:parse_command).and_return(command)
