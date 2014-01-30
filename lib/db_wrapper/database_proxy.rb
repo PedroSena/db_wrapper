@@ -4,12 +4,13 @@ module DBWrapper
     attr_reader :host, :port, :database_host, :database_port
     attr_accessor :protocol
 
-    def initialize(host, port, database_host, database_port)
+    def initialize(host, port, database_host, database_port, thread_pool_size = 4)
       @host = host
       @port = port
       @database_host = database_host
       @database_port = database_port
       @client_listeners = []
+      EM.threadpool_size = thread_pool_size
     end
 
     def add_client_listener(client_listener)

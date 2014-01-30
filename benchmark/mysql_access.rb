@@ -9,7 +9,7 @@ select = 'select * from test'
 delete = 'delete from test'
 update = "update test set description = 'another description'"
 
-iterations = 200
+iterations = ARGV.first.to_i
 
 Benchmark.bm do |bm|
 
