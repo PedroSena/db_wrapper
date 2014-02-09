@@ -17,7 +17,7 @@ describe DBWrapper::DatabaseProxy do
     EM.run do
       EventMachine.add_timer(0.1) do
         sock = TCPSocket.new '127.0.0.1', 3307
-        sock.send "\x10\x00\x00\x00\x03" + 'Select 1 from something', 0
+        sock.send "\x10\x00\x00\x00\x03" + 'Select 1 from something;', 0
         sock.close
       end
       EventMachine.add_timer(0.2) do
@@ -25,9 +25,16 @@ describe DBWrapper::DatabaseProxy do
       end
 
       proxy.protocol = DBWrapper::MysqlProtocol.new
-      proxy.add_client_listener(DBWrapper::Listeners::Select.new do
+      listener = DBWrapper::Listeners::Select.new do
         called = true
-      end)
+      end
+      proxy.add_client_listener(listener)
+      Socket.should_receive(:accept_loop) do |&block|
+        listener.perform
+      end
+      proxy.should_receive(:fork) do |&block|
+        block.call
+      end
       proxy.start!
     end
     expect(called).to be true

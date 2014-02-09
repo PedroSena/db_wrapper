@@ -47,7 +47,7 @@ module DBWrapper
           while data = connection.readpartial(self.protocol.max_packet_size) do
             client_listeners_controller.call_listeners(self.protocol, data)
           end
-        end
+        end          
       end
       listener_server      
     end  
