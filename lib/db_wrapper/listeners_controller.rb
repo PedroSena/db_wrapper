@@ -11,7 +11,7 @@ module DBWrapper
       return if parsed_command.empty?
       @listeners.select { |listener| listener.listening?(parsed_command) }.each do |listener|
         listener.command = parsed_command
-        EM.defer { listener.perform }
+        listener.perform
       end
     end
 
