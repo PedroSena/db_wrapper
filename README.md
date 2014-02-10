@@ -1,4 +1,4 @@
-# db_wrapper - Wrap your DB calls in a transparent way 
+# db_wrapper #
 
 ## What is db_wrapper ? ##
 
