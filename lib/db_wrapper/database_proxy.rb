@@ -1,6 +1,8 @@
 module DBWrapper
   class DatabaseProxy
 
+    DELIMITER = 'DBWrapper.EOF'
+
     attr_reader :host, :port, :database_host, :database_port, :listener_server_socket
     attr_accessor :protocol
 
@@ -25,7 +27,7 @@ module DBWrapper
         conn.server :database, host: database_proxy.database_host, port: database_proxy.database_port, relay_server: true
 
         conn.on_data do |data|
-          database_proxy.listener_server_socket.write_nonblock(data)
+          database_proxy.listener_server_socket.write_nonblock(data + DELIMITER)
           data
         end
 
@@ -38,11 +40,14 @@ module DBWrapper
     def create_listener_server
       listener_server = TCPServer.new(host, 0) #Creates on first free port it can find
       client_listeners_controller = ListenersController.new @client_listeners
+      max_packet_size = @protocol.max_packet_size + DELIMITER.size
       fork do
         Socket.accept_loop(listener_server) do |connection|
           begin
-            while data = connection.readpartial(self.protocol.max_packet_size) do
-              client_listeners_controller.call_listeners(self.protocol, data)
+            while data = connection.readpartial(max_packet_size) do
+              data.split(DELIMITER).each do |command|
+                client_listeners_controller.call_listeners(self.protocol, command)
+              end              
             end
           rescue Interrupt; end  #Thrown when you send a termination signal
         end          

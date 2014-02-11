@@ -17,6 +17,9 @@ Benchmark.bm do |bm|
     client = Mysql2::Client.new host: '127.0.0.1', username: 'db_wrapper', password: 'db_wrapper', database: 'db_wrapper_benchmark', port: 3307
     iterations.times do
       client.query select
+      client.query insert
+      client.query update
+      client.query delete
     end
   end
 
@@ -24,6 +27,9 @@ Benchmark.bm do |bm|
     client = Mysql2::Client.new host: '127.0.0.1', username: 'db_wrapper', password: 'db_wrapper', database: 'db_wrapper_benchmark', port: 3306
     iterations.times do
       client.query select
+      client.query insert
+      client.query update
+      client.query delete
     end
   end
 
